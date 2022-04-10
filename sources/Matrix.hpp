@@ -31,6 +31,7 @@ namespace zich{
         Matrix operator--(int);
         Matrix operator--();
         friend Matrix operator-(const Matrix &mat1, const Matrix &mat2);
+        friend Matrix operator-(Matrix &mat);
         Matrix operator-=(Matrix &mat);
         friend Matrix operator-=(Matrix &mat, const int scalar);
         friend Matrix operator-(const Matrix &mat);

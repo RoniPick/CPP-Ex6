@@ -54,18 +54,20 @@ TEST_CASE("Good input"){
     Matrix mat9(vec9, 2, 2);
     Matrix mat10(vec10, 2, 2);
     Matrix mat11(vec11, 2, 2);
-    CHECK(++mat9 == mat10); //returning the matrix after adding 1
-    CHECK(--mat9 == mat11); //returning the matrix after removing 1
-    CHECK(mat9++ == mat11); //returning the matrix before adding 1
-    CHECK(mat9-- == mat10); //returning the matrix before removing 1
+    ++mat9;
+    CHECK(mat9 == mat10); //returning the matrix after adding 1
+    --mat9;
+    CHECK(mat9 == mat11); //returning the matrix after removing 1
 
     vector<double> vec12 = {7, 7, 7, 7, 7, 7, 7, 7, 7};
     vector<double> vec13 = {6, 6, 6, 6, 6, 6, 6, 6, 6};
     Matrix mat12(vec12, 3, 3);
     Matrix mat13(vec13, 3, 3);
-    CHECK(mat13++ == mat7); //returning the matrix before adding 1
+    // mat7 = {6, 6, 6, 6, 6, 6, 6, 6, 6};
+    CHECK(mat13 == mat7); //returning the matrix before adding 1
+    mat13++;
     CHECK(mat13 == mat12); //the matrix after adding 1 in the prev test
-    CHECK(mat13-- == mat12); //returning the matrix before removing 1
+    mat13--;
     CHECK(mat13 == mat7); //the matrix after removing 1 in the prev test
 
     //operator += and -=
@@ -77,9 +79,18 @@ TEST_CASE("Good input"){
     Matrix mat15(vec15, 3, 3);   
     Matrix mat16(vec16, 3, 3);
     Matrix mat17(vec17, 3, 3);
-    CHECK((mat14+=4) == mat15);
-    CHECK((mat14-=1) == mat16);
-    CHECK((mat14-=3) == mat17);
+    vector<double> vt1 = {4, 4, 4, 4, 4, 4, 4, 4, 4};
+    vector<double> vt2 = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+    vector<double> vt3 = {3, 3, 3, 3, 3, 3, 3, 3, 3};
+    Matrix mt1(vt1, 3, 3);   
+    Matrix mt2(vt2, 3, 3);
+    Matrix mt3(vt3, 3, 3);
+    mat14+=mt1;
+    CHECK(mat14 == mat15);
+    mat14-=mt2;
+    CHECK(mat14 == mat16);
+    mat14-=mt3;
+    CHECK(mat14 == mat17);
 
     //operator *=
     vector<double> vec18 = {1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -88,17 +99,21 @@ TEST_CASE("Good input"){
     Matrix mat18(vec18, 3, 3);
     Matrix mat19(vec19, 3, 3);
     Matrix mat20(vec20, 3, 3);
-    CHECK((mat18*=7) == mat19);
-    CHECK((mat18*=(-1)) == mat20);
+    mat18*=7;
+    CHECK(mat18 == mat19);
+    mat18*=-1;
+    CHECK(mat18 == mat20);
 
     // matrix mult
-    vector<double> vec21 = {3, -1, 0.7, 1, 1, 0, 0, 3, 3.6};
-    vector<double> vec22 = {20.1, 1, 0};
+    vector<double> vec21 = {3, -1, 0, 1, 1, 0, 0, 3, 3};
+    vector<double> vec22 = {20, 1, 0};
     Matrix mat21(vec21, 3, 3);
     Matrix mat22(vec22, 3, 1);
-    vector<double> vec23 = {59.3, 21.1, 3};
+    vector<double> vec23 = {59, 21, 3};
     Matrix mat23(vec23, 3, 1);
-    CHECK((mat21*mat22) == mat23);
+    Matrix ans(3, 1);
+    ans = mat21*mat22;
+    CHECK(ans == mat23);
 
     // unari operators
     vector<double> vec24 = {7, 7, 7, 7, 7, 7, 7, 7, 7};
@@ -107,8 +122,10 @@ TEST_CASE("Good input"){
     Matrix mat24(vec24, 3, 3);
     Matrix mat25(vec25, 3, 3);
     Matrix mat26(vec26, 3, 3);
-    CHECK(+mat24==mat25);
-    CHECK(-mat25==mat26);
+    +mat24;
+    CHECK(mat24==mat25);
+    -mat25;
+    CHECK(mat25==mat26);
 }
 
 
@@ -137,12 +154,12 @@ TEST_CASE("Bad input and wrong checks"){
     Matrix m6(v4, 2, 2);
 
     // the size of m1 is not equal to the size of m6, any of this function will fail (because m1:3*3 and m6:2*2) :
-    CHECK_FALSE(m6 == m1); 
-    CHECK_FALSE(m6 != m1); 
-    CHECK_FALSE(m6 <= m1);
-    CHECK_FALSE(m6 < m1);
-    CHECK_FALSE(m6 > m1);
-    CHECK_FALSE(m6 >= m1);
+    CHECK_THROWS(if(m6 == m1){}); 
+    CHECK_THROWS(if(m6 != m1){}); 
+    CHECK_THROWS(if(m6 <= m1){});
+    CHECK_THROWS(if(m6 < m1){});
+    CHECK_THROWS(if(m6 > m1){});
+    CHECK_THROWS(if(m6 >= m1){});
     CHECK_THROWS(m6 + m1);
     CHECK_THROWS(m6 * m1);
     CHECK_THROWS(m6 - m1);
@@ -152,7 +169,9 @@ TEST_CASE("Bad input and wrong checks"){
     vector<double> v6 = {2, 1, 1, 1, 2, 1, 1, 1, 2};
     Matrix m7(v5, 3, 3);
     Matrix m8(v6, 3, 3);
-    CHECK_FALSE(m7++ == m8); 
+    CHECK_FALSE(m7 == m8); 
+    m7++;
+    CHECK(m7 == m8); 
 
 
 
