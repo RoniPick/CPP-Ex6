@@ -28,7 +28,7 @@ namespace zich{
         Matrix operator+=(Matrix &mat);
         friend Matrix operator+=(Matrix &mat, const int scalar);
 
-        Matrix operator=(const Matrix &mat);
+        Matrix& operator=(const Matrix &mat);
 
 
         // - operartions

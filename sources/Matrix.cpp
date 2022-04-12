@@ -197,18 +197,6 @@ namespace zich{
     }
 
     /*
-    in this function we operating each value in the given matrix and multing to each value by 1 
-    */
-    // Matrix operator+(Matrix &mat){
-    //     for(size_t i=0; i<mat.rows; i++){
-    //         for(size_t j=0; j<mat.cols; j++){
-    //             mat.matrix[i][j] *= 1;
-    //         }
-    //     }
-    //     return mat;
-    // }
-
-    /*
     in this function we creating a new matrix from the current matrix and mult it by -1 
     */
     Matrix Matrix::operator-(){
@@ -228,7 +216,16 @@ namespace zich{
     into the origin matrix, at the end we will return the origin matrix 
     with the given matrix values
     */
-    Matrix Matrix::operator=(const Matrix &mat){
+    Matrix& Matrix::operator=(const Matrix& mat){
+        this->matrix.clear();
+        this->matrix.resize(mat.rows);
+        for(size_t i=0; i<mat.rows; i++){
+            matrix[i].resize(mat.cols);
+            for(size_t j=0; j<mat.cols; j++){
+                this->matrix[i][j] = 0;
+            }
+        }
+
         for(size_t i=0; i<mat.rows; i++){
             for(size_t j=0; j<mat.cols; j++){
                 this->matrix[i][j] = mat.matrix[i][j];
@@ -503,6 +500,38 @@ namespace zich{
     }
 
     istream& operator>>(istream &in, const Matrix &mat){
+        // [a b c], [a b c], [a b c]
+        string ans;
+        string temp;
+        //adding the given stream into a string
+        while(getline(in, temp)){
+            ans += temp;
+        }
+        if(ans[0]!='[' || ans[ans.length()-1]!=']'){
+            throw invalid_argument("Invalid input");
+        }
+
+        //check if the input is valid
+        for(size_t i=0; i<ans.length()-1; i++){
+            if(ans[i] == ',' && ans[i+1] != ' '){
+                throw invalid_argument("Invalid input");
+            }
+            if(ans[i] == '[' && ans[i+1] == ' '){
+                throw invalid_argument("Invalid input");
+            }
+            if(ans[i] == ' ' && ans[i+1] == ' '){
+                throw invalid_argument("Invalid input");
+            }
+            if(i>=1 && ans[i-1] == ',' && ans[i] == ' ' && ans[i+1] != '['){
+                throw invalid_argument("Invalid input");
+            }
+            if(ans[i] == ']' && ans[i+1]!= ',' && i<ans.length()-2){
+                throw invalid_argument("Invalid input");
+            }
+        }
+
+
+
 
         return in;
         }
