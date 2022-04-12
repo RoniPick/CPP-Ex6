@@ -14,30 +14,37 @@ namespace zich{
 
     public:
     //counstructors
-        Matrix(vector<double> &matrix, size_t rows, size_t cols);
+        Matrix(const vector<double> &matrix, int rows, int cols);
         ~Matrix();
-        Matrix(size_t rows, size_t cols);
+        Matrix(int rows, int cols);
         Matrix(const Matrix &mat);
 
         // + operations
         Matrix operator++(int);
-        Matrix operator++();
-        friend Matrix operator+(Matrix &mat);
+        Matrix& operator++();
+        Matrix operator+();
+        // friend Matrix operator+(Matrix &mat);
         friend Matrix operator+(const Matrix &mat1, const Matrix &mat2);
         Matrix operator+=(Matrix &mat);
         friend Matrix operator+=(Matrix &mat, const int scalar);
 
+        Matrix operator=(const Matrix &mat);
+
+
         // - operartions
         Matrix operator--(int);
-        Matrix operator--();
+        Matrix& operator--();
+         Matrix operator-();
         friend Matrix operator-(const Matrix &mat1, const Matrix &mat2);
-        friend Matrix operator-(Matrix &mat);
+        //friend Matrix operator-(Matrix &mat);
         Matrix operator-=(Matrix &mat);
         friend Matrix operator-=(Matrix &mat, const int scalar);
         friend Matrix operator-(const Matrix &mat);
 
         // * operations
         friend Matrix operator*=(Matrix &mat, const int scalar);
+        // friend Matrix operator*=(Matrix &mat1, const Matrix &mat2);
+        Matrix operator*=(const Matrix &mat2);
         friend Matrix operator*(const Matrix &mat1, const Matrix &mat2);
         friend Matrix operator*(const double scalar, const Matrix &mat);
         friend Matrix operator*(const Matrix &mat, const double scalar);
@@ -56,7 +63,7 @@ namespace zich{
         //input output operations
         friend istream& operator>>(istream &in, const Matrix &mat);
         friend ostream& operator<<(ostream &out, const Matrix &mat);
-
+    
     };
     
     

@@ -8,7 +8,7 @@ using namespace std;
 namespace zich{
 
     //constructor - reciving vector, rows and cols number
-    Matrix::Matrix(vector<double> &matrix, size_t rows, size_t cols){
+    Matrix::Matrix(const vector<double> &matrix, int rows, int cols){
         if(rows<=0 || cols<=0){
             throw invalid_argument("Invalid input");
         }
@@ -20,13 +20,13 @@ namespace zich{
         if(matrix.size() != (rows*cols)){
             throw invalid_argument("Wrong input, n*m is not even to the matrix size");
         }
-        this->rows = rows;
-        this->cols = cols;
+        this->rows = (size_t)rows;
+        this->cols = (size_t)cols;
 
-        this->matrix.resize(rows);
+        this->matrix.resize((size_t)rows);
 
         for (size_t i = 0; i < rows; i++) {
-            this->matrix[i].resize(cols);
+            this->matrix[i].resize((size_t)cols);
         }
 
         size_t cur=0;
@@ -40,18 +40,18 @@ namespace zich{
     }
 
     //constructor - reciving only rows and cols number, for the metrix that i return in the functions 
-    Matrix::Matrix(size_t rows, size_t cols){
+    Matrix::Matrix(int rows, int cols){
         if(rows<=0 || cols<=0){
             throw invalid_argument("Invalid input");
         }
 
-        this->rows = rows;
-        this->cols = cols;
+        this->rows = (size_t)rows;
+        this->cols = (size_t)cols;
 
-        this->matrix.resize(rows);
+        this->matrix.resize((size_t)rows);
 
         for (size_t i = 0; i < rows; i++) {
-            this->matrix[i].resize(cols);
+            this->matrix[i].resize((size_t)cols);
         }
 
         for(size_t i=0; i<rows; i++){
@@ -68,23 +68,28 @@ namespace zich{
         this->rows=mat.rows;
         this->cols=mat.cols;
 
-        this->matrix.resize(rows);
+        // this->matrix.resize(rows);
+        vector<vector<double>> m(rows, vector<double>(cols, 0.0));
 
         for (size_t i = 0; i < this->rows; i++){
-            vector<double> r;
+            //vector<double> r;
+            //this->matrix[i].resize(cols);
             for (size_t j = 0; j < this->cols; j++){
-                r.push_back(mat.matrix[i][j]);
+                //r.push_back(mat.matrix[i][j]);
+                m[i][j] = mat.matrix[i][j];
             }
-            this->matrix.push_back(r); 
+            //this->matrix.push_back(r); 
         }
+         this->matrix = m;
         
     }
+
     Matrix::~Matrix(){
 
     }
 
     //adding before the matrix returned, the adding operation is on the main matrix
-    Matrix Matrix::operator++(){
+    Matrix& Matrix::operator++(){
         for(size_t i=0; i<this->rows; i++){
             for(size_t j=0; j<this->cols; j++){
                 this->matrix[i][j]++;
@@ -121,7 +126,7 @@ namespace zich{
     }
 
     //removing before the matrix returned, the removing operation is on the main matrix
-    Matrix Matrix::operator--(){
+    Matrix& Matrix::operator--(){
         for(size_t i=0; i<this->rows; i++){
             for(size_t j=0; j<this->cols; j++){
                 this->matrix[i][j]--;
@@ -167,6 +172,7 @@ namespace zich{
         }
 
         Matrix m(mat1.rows, mat1.cols);
+
         for(size_t i=0; i<m.rows; i++){
             for(size_t j=0; j<m.cols; j++){
                 m.matrix[i][j] = mat1.matrix[i][j] - mat2.matrix[i][j];
@@ -176,32 +182,63 @@ namespace zich{
     }
 
     /*
+    in this function we creating a new matrix from the current matrix, as it is, unary + 
+    */
+    Matrix Matrix::operator+(){
+         vector<double> vec;
+         size_t k=0;
+         for(size_t i=0; i<this->rows; i++){
+             for(size_t j=0; j<this->cols; j++){
+                 vec.push_back(this->matrix[i][j]);
+             }
+         }
+         
+         return Matrix(vec,this->rows,this->cols);
+    }
+
+    /*
     in this function we operating each value in the given matrix and multing to each value by 1 
     */
-    Matrix operator+(Matrix &mat){
-        for(size_t i=0; i<mat.rows; i++){
-            for(size_t j=0; j<mat.cols; j++){
-                mat.matrix[i][j] *= 1;
-            }
-        }
-        return mat;
-    }
+    // Matrix operator+(Matrix &mat){
+    //     for(size_t i=0; i<mat.rows; i++){
+    //         for(size_t j=0; j<mat.cols; j++){
+    //             mat.matrix[i][j] *= 1;
+    //         }
+    //     }
+    //     return mat;
+    // }
 
     /*
-    in this function we operating each value in the given matrix and multing to each value by -1 
+    in this function we creating a new matrix from the current matrix and mult it by -1 
     */
-    Matrix operator-(Matrix &mat){
-        for(size_t i=0; i<mat.rows; i++){
-            for(size_t j=0; j<mat.cols; j++){
-                mat.matrix[i][j] *= (-1);
-            }
-        }
-        return mat;
+    Matrix Matrix::operator-(){
+     vector<double> vec;
+         size_t k=0;
+         for(size_t i=0; i<this->rows; i++){
+             for(size_t j=0; j<this->cols; j++){
+                 vec.push_back(-this->matrix[i][j]);
+             }
+         }
+         
+         return Matrix(vec,this->rows,this->cols);
     }
 
     /*
-    in this function we operating each value in both matrixs and adding to the main matrix the value in the
-    same location in the given materix
+    in this function we operating 2 for loops, each value we copy from the given matix
+    into the origin matrix, at the end we will return the origin matrix 
+    with the given matrix values
+    */
+    Matrix Matrix::operator=(const Matrix &mat){
+        for(size_t i=0; i<mat.rows; i++){
+            for(size_t j=0; j<mat.cols; j++){
+                this->matrix[i][j] = mat.matrix[i][j];
+            }    
+        }
+        return *this;
+    }
+    /*
+    in this function we operating each value in both matrixs and adding to the main matrix the
+    value in the same location in the given materix
     */
     Matrix Matrix::operator+=(Matrix &mat){
         //checking if the matrixs are in the same size
@@ -411,17 +448,30 @@ namespace zich{
 
         Matrix m(mat1.rows, mat2.cols);
 
-        int sum = 0;
         for(size_t i=0; i<mat1.rows; i++){
             for(size_t j=0; j<mat2.cols; j++){
                 m.matrix[i][j] = 0;
                 for(size_t k=0; k<mat2.rows; k++){
                     m.matrix[i][j] += mat1.matrix[i][k] * mat2.matrix[k][j];
                 }
-                //m.matrix[i][j] = sum; 
             }    
         }
         return m;
+    }
+
+    /*
+    in this function we create an help matrix, mult the given matrixs values and adding 
+    it to this help matrix, after multing the matrixs we copy the new matrix
+    to the first matrix and return it (this)
+    */
+    Matrix Matrix::operator*=(const Matrix &mat2){
+        //checking if the matrixs are in the same size
+        if(this->cols != mat2.rows){
+            throw invalid_argument("Matrixs could not be multiplyed");
+        }
+        Matrix m = (*this)*mat2;
+        *this = m;
+        return *this;
     }
 
     /*
@@ -453,10 +503,28 @@ namespace zich{
     }
 
     istream& operator>>(istream &in, const Matrix &mat){
+
         return in;
         }
 
     ostream& operator<<(ostream &out, const Matrix &mat){
+          for(size_t i=0; i< mat.rows; i++){
+              out << '[';
+            for(size_t j=0; j<mat.cols; j++){
+                out << mat.matrix[i][j];
+                if(j!=mat.cols-1){
+                    out << ' ';
+                }
+                else{
+                    out << ']';
+                }
+                
+            }
+            if(i!=mat.rows-1){
+                out << endl;
+            }
+            
+        }
         return out;
         }
     }
